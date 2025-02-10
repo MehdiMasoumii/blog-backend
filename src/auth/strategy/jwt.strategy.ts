@@ -1,29 +1,37 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { UsersService } from 'src/users/users.service';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JWTPayload } from '../entities/jwt.interface';
+import { UsersService } from 'src/users/users.service';
 import { Request } from 'express';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly userService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (req: Request) => {
-          return req.cookies['access_token']; // Extract JWT from cookie named 'access_token'
+        (req: Request): string | null => {
+          const access_token: string | undefined = req.cookies['access_token'];
+          if (!access_token) {
+            throw new UnauthorizedException({
+              statusCode: HttpStatus.UNAUTHORIZED,
+              message: 'Unauthorized!',
+            });
+          }
+          return access_token; // Extract JWT from cookie named 'access_token'
         },
       ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET, // Your secret key for signing the JWT
+      secretOrKey: process.env.JWT_SECRET ?? 'Secret Key HERE', // Your secret key for signing the JWT
     });
   }
+
   async validate(payload: JWTPayload) {
     const user = await this.userService.findById(payload.sub);
+
     if (!user) {
       throw new Error('Unauthorized');
     }

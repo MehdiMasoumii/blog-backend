@@ -12,7 +12,7 @@ export interface User extends Document {
 }
 
 export const UserSchema = new Schema<User>({
-  fullname: { type: String, required: true },
+  fullname: { type: String, required: true, minlength: 4, maxlength: 36 },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   biography: { type: String, maxlength: 128 },

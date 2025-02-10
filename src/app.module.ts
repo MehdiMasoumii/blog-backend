@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(
-      process.env.DATABASE_URL ?? 'mongodb://localhost:27017/newNestAPp',
+      process.env.DATABASE_URL ?? 'mongodb://localhost:27017/newNestApp',
     ),
     UsersModule,
     AuthModule,

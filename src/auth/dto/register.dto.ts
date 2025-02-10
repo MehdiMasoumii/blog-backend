@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class CreateUserDto {
+export class RegisterDto {
   @IsString()
-  @MinLength(6)
-  @MaxLength(24)
+  @MinLength(4)
+  @MaxLength(36)
   fullname: string;
 
   @IsEmail()
