@@ -1,11 +1,11 @@
-import { Controller, Body, Post, Res, Get, UseGuards } from '@nestjs/common';
+import { Controller, Body, Post, Res, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
 import { RegisterDto } from './dto/register.dto';
-import { AuthGuard } from '../common/guards/auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { User as UserSchema } from 'src/users/entities/user.schema';
+import { Auth } from 'src/common/decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -25,8 +25,8 @@ export class AuthController {
     await this.authService.register(registerDto, res);
   }
 
-  @UseGuards(AuthGuard)
   @Get('user')
+  @Auth()
   getUser(@User() user: UserSchema) {
     return {
       statusCode: 200,

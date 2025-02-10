@@ -1,4 +1,5 @@
 import { Document, Schema } from 'mongoose';
+import { UserRoles } from 'src/auth/entities/roles.enum';
 
 export interface User extends Document {
   id: string;
@@ -6,7 +7,7 @@ export interface User extends Document {
   email: string;
   password: string;
   biography: string;
-  role: 'user' | 'admin';
+  role: UserRoles;
   likedPosts: object[];
   bookmarkedPosts: object[];
 }
@@ -18,9 +19,9 @@ export const UserSchema = new Schema<User>({
   biography: { type: String, maxlength: 128 },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: Object.values(UserRoles),
     required: true,
-    default: 'user',
+    default: UserRoles.USER,
   },
   likedPosts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   bookmarkedPosts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],

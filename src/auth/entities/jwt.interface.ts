@@ -1,5 +1,7 @@
+import { UserRoles } from './roles.enum';
+
 export interface JWTPayload {
   sub: string;
   email: string;
-  role: 'admin' | 'user';
+  role: UserRoles;
 }
