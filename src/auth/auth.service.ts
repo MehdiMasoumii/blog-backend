@@ -46,9 +46,11 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
+    console.log(payload);
+
     try {
       return await this.jwtService.signAsync(payload, {
-        expiresIn: '60m',
+        expiresIn: '15m',
       });
     } catch {
       throw new InternalServerErrorException();
@@ -121,6 +123,24 @@ export class AuthService {
         fullname: user.fullname,
         email: user.email,
       },
+    });
+  }
+
+  async refreshToken(token: string, res: Response) {
+    if (!token) throw new UnauthorizedException();
+
+    const access_token = await this.refreshAccessToken(token);
+
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Use `secure: true` in production
+      sameSite: 'strict', // Can be 'Lax', 'Strict' or 'None' (for cross-site cookies)
+      maxAge: 60 * 60 * 1000, // 1 hour expiration for access token
+    });
+
+    return res.status(200).send({
+      statusCode: 200,
+      message: 'Token refreshed',
     });
   }
 }

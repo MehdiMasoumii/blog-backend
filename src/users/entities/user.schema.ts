@@ -1,15 +1,18 @@
 import { Document, Schema } from 'mongoose';
 import { UserRoles } from 'src/auth/entities/roles.enum';
 
-export interface User extends Document {
-  id: string;
+export interface UserSafe {
   fullname: string;
   email: string;
-  password: string;
   biography: string;
   role: UserRoles;
   likedPosts: object[];
   bookmarkedPosts: object[];
+}
+
+export interface User extends UserSafe, Document {
+  id: string;
+  password: string;
 }
 
 export const UserSchema = new Schema<User>({

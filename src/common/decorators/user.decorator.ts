@@ -1,15 +1,15 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { Request } from 'express';
-import { User as UserSchema } from 'src/users/entities/user.schema';
+import { UserSafe } from 'src/users/entities/user.schema';
 
 // this param decorator can be used after authGuard and returns user jwt payload
 export const User = createParamDecorator(
-  (data: keyof UserSchema, context: ExecutionContext) => {
+  (data: keyof UserSafe, context: ExecutionContext) => {
     const req: Request & {
-      user: UserSchema;
+      user: UserSafe;
     } = context.switchToHttp().getRequest();
 
-    const user: UserSchema | undefined = req.user;
+    const user: UserSafe | undefined = req.user;
     if (!data) {
       return user;
     }

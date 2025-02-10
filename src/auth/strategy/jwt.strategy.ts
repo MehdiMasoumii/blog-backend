@@ -31,10 +31,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JWTPayload) {
     const user = await this.userService.findById(payload.sub);
-
     if (!user) {
       throw new Error('Unauthorized');
     }
-    return user; // This will be attached to req.user
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, __v, ...userSafe } = user.toJSON();
+
+    return userSafe; // This will be attached to req.user
   }
 }
