@@ -59,8 +59,36 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  async remove(id: string) {
-    return await this.userModel.findByIdAndDelete(id);
+  async verify(email: string) {
+    try {
+      await this.userModel.findOneAndUpdate(
+        {
+          email,
+        },
+        {
+          isVerifyed: true,
+        },
+      );
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async resetPassword(email: string, newPassword: string) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(newPassword, salt);
+      await this.userModel.findOneAndUpdate(
+        {
+          email,
+        },
+        {
+          password: hash,
+        },
+      );
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 
   async toggleLike(postId: string, userId: string, action: 'remove' | 'add') {

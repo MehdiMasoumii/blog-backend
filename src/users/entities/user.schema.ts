@@ -6,6 +6,7 @@ export interface UserSafe {
   fullname: string;
   email: string;
   biography: string;
+  isVerifyed: boolean;
   role: UserRoles;
   likedPosts: Types.ObjectId[];
   bookmarkedPosts: Types.ObjectId[];
@@ -21,6 +22,7 @@ export const UserSchema = new Schema<User>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   biography: { type: String, maxlength: 128 },
+  isVerifyed: { type: Boolean, required: true, default: false },
   role: {
     type: String,
     enum: Object.values(UserRoles),

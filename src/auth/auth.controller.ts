@@ -1,4 +1,12 @@
-import { Controller, Body, Post, Res, Get } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Post,
+  Res,
+  Get,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
@@ -7,6 +15,7 @@ import { User } from 'src/common/decorators/user.decorator';
 import { UserSafe } from 'src/users/entities/user.schema';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { Cookies } from 'src/common/decorators/cookie.decorator';
+import { ResetPassDto } from './dto/resetPass.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -42,6 +51,33 @@ export class AuthController {
       message: 'you are authenticated!',
       user,
     };
+  }
+
+  @Get('verification')
+  async sendVerification(
+    @Query('email') userEmail: string | undefined,
+    @Query('method') method: 'reset' | 'verify',
+  ) {
+    if (userEmail && method) {
+      return await this.authService.sendVerification(userEmail, method);
+    }
+    throw new BadRequestException();
+  }
+
+  @Get('verify')
+  async verifyEmail(
+    @Query('email') userEmail: string | undefined,
+    @Query('token') token: string | undefined,
+  ) {
+    if (userEmail && token) {
+      return await this.authService.verifyEmail(userEmail, token);
+    }
+    throw new BadRequestException();
+  }
+
+  @Get('reset')
+  async resetPassword(@Body() resetPassBody: ResetPassDto) {
+    return await this.authService.resetPassword(resetPassBody);
   }
 
   @Get('logout')

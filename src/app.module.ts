@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
+import { EmailModule } from './email/email.module';
+import { RedisService } from './redis.service';
 
 @Module({
   imports: [
@@ -18,8 +20,10 @@ import { PostsModule } from './posts/posts.module';
     UsersModule,
     AuthModule,
     PostsModule,
+    EmailModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RedisService],
+  exports: [RedisService],
 })
 export class AppModule {}

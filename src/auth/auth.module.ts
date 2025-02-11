@@ -6,6 +6,8 @@ import { UsersModule } from 'src/users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { EmailModule } from 'src/email/email.module';
+import { RedisService } from 'src/redis.service';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       signOptions: { expiresIn: '60m' }, // Access token expiration time
     }),
     UsersModule,
+    EmailModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, RedisService],
   controllers: [AuthController],
 })
 export class AuthModule {}

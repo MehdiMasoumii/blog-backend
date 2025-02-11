@@ -4,4 +4,5 @@ export interface JWTPayload {
   sub: string;
   email: string;
   role: UserRoles;
+  isVerified: boolean;
 }

@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   HttpStatus,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -12,12 +14,17 @@ import { User } from 'src/users/entities/user.schema';
 import { JWTPayload } from './entities/jwt.interface';
 import { Response } from 'express';
 import { RegisterDto } from './dto/register.dto';
+import { EmailService } from 'src/email/email.service';
+import { RedisService } from 'src/redis.service';
+import { ResetPassDto } from './dto/resetPass.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UsersService,
+    private readonly emailService: EmailService,
+    private readonly redisService: RedisService,
   ) {}
 
   // validates incoming credentials, if user exists and password matchs,
@@ -42,9 +49,10 @@ export class AuthService {
   // generates an access token with a given user object and returns it
   async generateAccessToken(user: User): Promise<string> {
     const payload: JWTPayload = {
-      sub: user.id,
+      sub: user._id,
       email: user.email,
       role: user.role,
+      isVerified: user.isVerifyed,
     };
 
     try {
@@ -58,8 +66,8 @@ export class AuthService {
 
   // generates a refresh token with a given user object and returns it
   async generateRefreshToken(user: User): Promise<string> {
-    const payload: JWTPayload = {
-      sub: user.id,
+    const payload: Partial<JWTPayload> = {
+      sub: user._id,
       email: user.email,
       role: user.role,
     };
@@ -140,6 +148,53 @@ export class AuthService {
     return res.status(200).send({
       statusCode: 200,
       message: 'Token refreshed',
+    });
+  }
+
+  async sendVerification(userEmail: string, method: 'reset' | 'verify') {
+    const token = await bcrypt.hash(userEmail, 10);
+    await this.emailService.sendVerificationEmail(userEmail, token, method);
+    await this.redisService.setToken(method, userEmail, token, 240);
+    return {
+      statusCode: HttpStatus.OK,
+      message: `email sent! check your inbox`,
+    };
+  }
+
+  async verifyEmail(email: string, token: string) {
+    const sentToken = await this.redisService.getToken('verify', email);
+    if (sentToken === token) {
+      await this.userService.verify(email);
+      await this.redisService.deleteToken('verify', email);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Email has verified!',
+      };
+    }
+    return {
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Invalid email or token or both',
+    };
+  }
+
+  async resetPassword(body: ResetPassDto) {
+    const sentToken = await this.redisService.getToken('reset', body.email);
+    if (body.newPassword !== body.newPasswordConfirmation) {
+      throw new BadRequestException(
+        'new password and confirmation must be equal!',
+      );
+    }
+    if (sentToken === body.token) {
+      await this.userService.resetPassword(body.email, body.newPassword);
+      await this.redisService.deleteToken('reset', body.email);
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Password has reseted!',
+      };
+    }
+    throw new NotFoundException({
+      statusCode: HttpStatus.NOT_FOUND,
+      message: 'Invalid email or token or both',
     });
   }
 }
