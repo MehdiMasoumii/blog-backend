@@ -46,7 +46,6 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
-    console.log(payload);
 
     try {
       return await this.jwtService.signAsync(payload, {

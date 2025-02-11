@@ -62,4 +62,16 @@ export class UsersService {
   async remove(id: string) {
     return await this.userModel.findByIdAndDelete(id);
   }
+
+  async toggleLike(postId: string, userId: string, action: 'remove' | 'add') {
+    if (action === 'remove') {
+      await this.userModel.findByIdAndUpdate(userId, {
+        $pull: { likedPosts: postId },
+      });
+    } else {
+      await this.userModel.findByIdAndUpdate(userId, {
+        $addToSet: { likedPosts: postId },
+      });
+    }
+  }
 }

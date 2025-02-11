@@ -1,17 +1,18 @@
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, Types } from 'mongoose';
 import { UserRoles } from 'src/auth/entities/roles.enum';
 
 export interface UserSafe {
+  _id: string;
   fullname: string;
   email: string;
   biography: string;
   role: UserRoles;
-  likedPosts: object[];
-  bookmarkedPosts: object[];
+  likedPosts: Types.ObjectId[];
+  bookmarkedPosts: Types.ObjectId[];
 }
 
 export interface User extends UserSafe, Document {
-  id: string;
+  _id: string;
   password: string;
 }
 
