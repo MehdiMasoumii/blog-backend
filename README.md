@@ -22,15 +22,26 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+# Blog Backend
+
+This is a backend application for a blog platform built with NestJS. It provides APIs for user authentication, post management, and more.
+
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This project is a NestJS-based backend for a blog application. It includes features such as user authentication, post creation, updating, deletion, and more.
 
-## Project setup
+## Project Setup
 
-```bash
-$ npm install
-```
+### Prerequisites
+
+- Node.js
+- npm
+- MongoDB
+- Redis
+
+### Environment Variables
+
+Rename the `.env.example` file in the root directory to `.env` and change the environment variable placeholders to your own:
 
 ## Compile and run the project
 
