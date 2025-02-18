@@ -60,7 +60,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"user1@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
+							"raw": "{\r\n    \"email\": \"dev.mahdimasoumi@gmail.com\",\r\n    \"password\": \"12345678\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -321,6 +321,24 @@
 					"response": []
 				},
 				{
+					"name": "authorPosts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/posts/author",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"posts",
+								"author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "likePost",
 					"request": {
 						"method": "GET",
@@ -363,7 +381,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "67b2bff93e30696698d77aad"
 								}
 							]
 						}
@@ -388,7 +406,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "67b2bff93e30696698d77aad"
 								}
 							]
 						}

@@ -33,6 +33,12 @@ export class PostsController {
     return await this.postsService.findAll();
   }
 
+  @Auth()
+  @Get('author')
+  async findAuthorPosts(@User('_id') userId: string) {
+    return await this.postsService.findAuthorPosts(userId);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     if (id === ':id') {
@@ -88,11 +94,5 @@ export class PostsController {
       throw new BadRequestException();
     }
     return await this.postsService.bookmarkPost(id, userId);
-  }
-
-  @Auth()
-  @Get('/author')
-  async findAuthorPosts(@User('_id') userId: string) {
-    return await this.postsService.findAuthorPosts(userId);
   }
 }
