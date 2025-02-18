@@ -71,7 +71,7 @@ npm install
 
 Rename the `.env.example` file in the root directory to `.env` and change the environment variable placeholders to your own
 
-## Compile and run the project
+## Usage
 
 ```bash
 # development
@@ -82,19 +82,6 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
 
 ## Api Endpoints
