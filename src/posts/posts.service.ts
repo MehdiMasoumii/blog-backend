@@ -40,6 +40,16 @@ export class PostsService {
     }
   }
 
+  async findAuthorPosts(authorId: string) {
+    try {
+      return await this.postModel.find({
+        author: authorId,
+      });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
   async findOne(id: string) {
     try {
       return await this.postModel
@@ -101,6 +111,26 @@ export class PostsService {
       statusCode: 404,
       message: 'Post not found!',
     });
+  }
+
+  async postStatusToggle(id: string, userId: string) {
+    const post = await this.findOneByIdAndAuthor(id, userId);
+    if (!post) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: 'Post not found!',
+      });
+    }
+    post.isPublished = !post.isPublished;
+    try {
+      await post.save();
+      return {
+        statusCode: 201,
+        message: post.isPublished ? 'Post has published' : 'Post has archived',
+      };
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 
   async likePostToggle(id: string, userId: string) {

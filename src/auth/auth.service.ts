@@ -57,7 +57,7 @@ export class AuthService {
 
     try {
       return await this.jwtService.signAsync(payload, {
-        expiresIn: '15m',
+        expiresIn: '1h',
       });
     } catch {
       throw new InternalServerErrorException();
@@ -142,7 +142,7 @@ export class AuthService {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Use `secure: true` in production
       sameSite: 'strict', // Can be 'Lax', 'Strict' or 'None' (for cross-site cookies)
-      maxAge: 60 * 60 * 1000, // 1 hour expiration for access token
+      maxAge: 60 * 60 * 1000, // 15 min expiration for access token
     });
 
     return res.status(200).send({

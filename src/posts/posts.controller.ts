@@ -60,8 +60,19 @@ export class PostsController {
   }
 
   @Auth()
+  @Get('toggleStatus/:id')
+  async postStatusToggle(@Param('id') id: string, @User('_id') userId: string) {
+    return await this.postsService.postStatusToggle(id, userId);
+  }
+
+  @Auth()
   @Get('bookmark/:id')
   async bookmarkPost(@Param('id') id: string, @User('_id') userId: string) {
     return await this.postsService.bookmarkPost(id, userId);
+  }
+
+  @Get('/author/:id')
+  async findAuthorPosts(@Param('id') authorId: string) {
+    return await this.postsService.findAuthorPosts(authorId);
   }
 }
