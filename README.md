@@ -35,7 +35,6 @@ This is a backend application for a blog platform built with NestJS. It provides
 - [Environment Variables](#environment-variables)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact Information](#contact-information)
