@@ -57,8 +57,8 @@ This project is a NestJS-based backend for a blog application. It includes featu
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/MehdiMasoumii/blog-backend.git
+cd blog-backend
 ```
 
 Install dependencies:
