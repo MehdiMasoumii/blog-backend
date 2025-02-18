@@ -75,7 +75,7 @@ export class AuthController {
     throw new BadRequestException();
   }
 
-  @Get('reset')
+  @Post('reset')
   async resetPassword(@Body() resetPassBody: ResetPassDto) {
     return await this.authService.resetPassword(resetPassBody);
   }

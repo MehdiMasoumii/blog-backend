@@ -3,7 +3,6 @@ import {
   HttpStatus,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -192,8 +191,8 @@ export class AuthService {
         message: 'Password has reseted!',
       };
     }
-    throw new NotFoundException({
-      statusCode: HttpStatus.NOT_FOUND,
+    throw new BadRequestException({
+      statusCode: HttpStatus.BAD_REQUEST,
       message: 'Invalid email or token or both',
     });
   }

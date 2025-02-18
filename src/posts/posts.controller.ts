@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -34,6 +35,9 @@ export class PostsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
+    if (id === ':id') {
+      throw new BadRequestException();
+    }
     return await this.postsService.findOne(id);
   }
 
@@ -44,35 +48,51 @@ export class PostsController {
     @Body() updatePostDto: UpdatePostDto,
     @User('_id') userId: string,
   ) {
+    if (id === ':id') {
+      throw new BadRequestException();
+    }
     return await this.postsService.update(id, updatePostDto, userId);
   }
 
   @Auth(UserRoles.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string, @User('_id') userId: string) {
+    if (id === ':id') {
+      throw new BadRequestException();
+    }
     return await this.postsService.remove(id, userId);
   }
 
   @Auth()
   @Get('like/:id')
   async likePost(@Param('id') id: string, @User('_id') userId: string) {
+    if (id === ':id') {
+      throw new BadRequestException();
+    }
     return await this.postsService.likePostToggle(id, userId);
   }
 
   @Auth()
   @Get('toggleStatus/:id')
   async postStatusToggle(@Param('id') id: string, @User('_id') userId: string) {
+    if (id === ':id') {
+      throw new BadRequestException();
+    }
     return await this.postsService.postStatusToggle(id, userId);
   }
 
   @Auth()
   @Get('bookmark/:id')
   async bookmarkPost(@Param('id') id: string, @User('_id') userId: string) {
+    if (id === ':id') {
+      throw new BadRequestException();
+    }
     return await this.postsService.bookmarkPost(id, userId);
   }
 
-  @Get('/author/:id')
-  async findAuthorPosts(@Param('id') authorId: string) {
-    return await this.postsService.findAuthorPosts(authorId);
+  @Auth()
+  @Get('/author')
+  async findAuthorPosts(@User('_id') userId: string) {
+    return await this.postsService.findAuthorPosts(userId);
   }
 }
