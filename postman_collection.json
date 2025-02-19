@@ -168,12 +168,6 @@
 					"request": {
 						"method": "GET",
 						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2N2E3OGEzZmU1ODkyM2IwNGIzZDUzMDQiLCJlbWFpbCI6ImRldi5tYWhkaW1hc291bWlAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzM5MDM0MzgzLCJleHAiOjE3MzkxMjA3ODN9.7lErrxQ3XGnthc_uZ__RwD9GmSj0yJbu-381ejOAuFI",
-								"type": "text",
-								"disabled": true
-							}
 						],
 						"url": {
 							"raw": "{{base_url}}/auth/dashboard",
