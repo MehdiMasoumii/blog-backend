@@ -4,6 +4,7 @@ import { PostsController } from './posts.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostSchema } from './entities/post.schema';
 import { UsersModule } from 'src/users/users.module';
+import { RedisService } from 'src/redis.service';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule,
   ],
   controllers: [PostsController],
-  providers: [PostsService],
+  providers: [PostsService, RedisService],
 })
 export class PostsModule {}

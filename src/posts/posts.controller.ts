@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -14,6 +16,8 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { Auth } from 'src/common/decorators/auth.decorator';
 import { UserRoles } from 'src/auth/entities/roles.enum';
 import { User } from 'src/common/decorators/user.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from 'src/helpers/multer.config';
 
 @Controller('posts')
 export class PostsController {
@@ -44,20 +48,44 @@ export class PostsController {
     if (id === ':id') {
       throw new BadRequestException();
     }
-    return await this.postsService.findOne(id);
+    const post = await this.postsService.findOne(id);
+    return post;
   }
 
   @Auth(UserRoles.ADMIN)
   @Patch(':id')
+  @UseInterceptors(
+    FileInterceptor('coverImage', {
+      storage: multerOptions.storage,
+      fileFilter(req, file, cb) {
+        const filetypes: string[] = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (filetypes.includes(file.mimetype)) {
+          return cb(null, true);
+        }
+        return cb(new BadRequestException('File type not allowed'), false);
+      },
+      limits: {
+        fileSize: 1024 * 1024 * 2,
+      },
+    }),
+  )
   async update(
     @Param('id') id: string,
+    @UploadedFile() coverImage: Express.Multer.File,
     @Body() updatePostDto: UpdatePostDto,
     @User('_id') userId: string,
   ) {
     if (id === ':id') {
       throw new BadRequestException();
     }
-    return await this.postsService.update(id, updatePostDto, userId);
+    const coverImagePath = coverImage.path.split('uploads')[1];
+
+    return await this.postsService.update(
+      id,
+      updatePostDto,
+      userId,
+      coverImagePath,
+    );
   }
 
   @Auth(UserRoles.ADMIN)

@@ -8,6 +8,9 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { EmailModule } from './email/email.module';
 import { RedisService } from './redis.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -17,6 +20,10 @@ import { RedisService } from './redis.service';
     MongooseModule.forRoot(
       process.env.DATABASE_URL ?? 'mongodb://localhost:27017/newNestApp',
     ),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'static'),
+    }),
+    MulterModule.register(),
     UsersModule,
     AuthModule,
     PostsModule,

@@ -11,8 +11,11 @@ export class EmailService {
 
   private async initializeTransporter() {
     try {
-      const accessToken =
-        (await this.oauth2Client.getAccessToken())?.token || '';
+      const accessToken = (await this.oauth2Client.getAccessToken())?.token;
+      if (!accessToken) {
+        console.log('get accessToken failed');
+        return;
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       this.transporter = nodemailer.createTransport({

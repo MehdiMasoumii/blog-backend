@@ -9,6 +9,8 @@ import { createClient, RedisClientType } from 'redis';
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: RedisClientType;
+  private defaultStringsTTL: number = 600;
+  private defaultSetsTTL: number = 1200;
 
   constructor() {
     this.client = createClient({
@@ -46,6 +48,57 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     email: string,
   ): Promise<string | null> {
     return await this.client.get(`${method}:${email}`);
+  }
+
+  async cacheData(key: string, value: string) {
+    try {
+      await this.client.set(key, value, {
+        EX: this.defaultStringsTTL,
+      });
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async cacheAuthorPosts(key: string, postId: string[]) {
+    try {
+      await this.client.SADD(key, postId);
+      await this.client.expire(key, this.defaultSetsTTL);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getCachedAuthorPosts(key: string) {
+    try {
+      return await this.client.SMEMBERS(key);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getCachedData(key: string) {
+    try {
+      return await this.client.get(key);
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getMultipleCachedData(keys: string[]) {
+    try {
+      const cache = await this.client.mGet(keys);
+      return cache;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+  async cacheMultipleData(items: Record<string, string>) {
+    try {
+      await this.client.mSet(items);
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 
   async deleteToken(method: 'reset' | 'verify', email: string): Promise<void> {
